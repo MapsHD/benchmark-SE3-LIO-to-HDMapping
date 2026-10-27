@@ -1,0 +1,40 @@
+# SE3-LIO on the benchmark's canonical bag (see the orchestration README, "Canonical bag").
+# SE3-LIO's own ros1/config/oxspires.yaml (this dataset: Hesai QT64 + Alphasense IMU) with only
+# the sensor description changed: topics, min_range 0.5 (blind), and the IMU -> lidar extrinsic
+# identity (the bag's IMU is in the lidar frame). The node is built with its default
+# LIDAR_TYPE=ouster, which reads the canonical `t` (uint32 ns from the header stamp);
+# oxspires.yaml's own Hesai type needs a float64 `timestamp`, which the canonical cloud lacks.
+imu_topic: "/lidar/imu"
+lidar_topic: "/lidar/pointcloud"
+
+sensors:
+  imu:
+    acc_cov: 0.1
+    gyr_cov: 0.1
+    b_acc_cov: 0.0001
+    b_gyr_cov: 0.0001
+
+  lidar:
+    min_range: 0.5
+    range_cov: 0.02
+    angle_cov: 0.1
+
+  # [quat : w, x, y, z] — IMU -> LiDAR: identity (the canonical IMU is in the lidar frame)
+  t_exts: [0.0, 0.0, 0.0]
+  q_exts: [1.0, 0.0, 0.0, 0.0]
+
+downsample:
+  resolution: 1.0
+
+max_iter: 4
+
+voxel_map:
+  resolution: 1.0
+  max_layer: 2
+  layer_size: [5, 5, 5, 5, 5]
+  max_point_size: 1000
+  plane_threshold: 0.05
+
+  map_sliding_en: true
+  sliding_thresh: 8.0
+  half_map_size: 50
